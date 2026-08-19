@@ -36,10 +36,7 @@ function parseFrontmatter(source, filename) {
     throw new Error(`${filename}: title、url、order は必須です。`);
   }
 
-  return {
-    ...data,
-    description: match[2].trim().replace(/\s+/g, ' '),
-  };
+  return data;
 }
 
 function escapeHtml(value) {
@@ -51,12 +48,9 @@ function escapeHtml(value) {
     .replaceAll("'", '&#039;');
 }
 
-function projectCard(project, index) {
-  const hostname = new URL(project.url).hostname;
-  const delay = `${140 + index * 90}ms`;
-
+function projectItem(project) {
   return `
-    <article class="project-card reveal" style="--delay: ${delay}">
+    <li class="project-item">
       <a
         class="project-link"
         href="${escapeHtml(project.url)}"
@@ -64,20 +58,13 @@ function projectCard(project, index) {
         rel="noreferrer"
         aria-label="${escapeHtml(project.title)}を開く（新しいタブ）"
       >
-        <span class="project-meta">
-          <span class="status"><span class="status-dot"></span>Live project</span>
-          <span class="domain">${escapeHtml(hostname)}</span>
+        <span class="project-copy">
+          <span class="project-title">${escapeHtml(project.title)}</span>
+          <span class="project-url">${escapeHtml(project.url)}</span>
         </span>
-        <span class="project-main">
-          <span>
-            <span class="project-title">${escapeHtml(project.title)}</span>
-            <span class="project-description">${escapeHtml(project.description)}</span>
-          </span>
-          <span class="arrow" aria-hidden="true">↗</span>
-        </span>
-        <span class="route" aria-hidden="true"><span class="route-dot"></span></span>
+        <span class="arrow" aria-hidden="true">↗</span>
       </a>
-    </article>
+    </li>
   `;
 }
 
@@ -87,43 +74,20 @@ const projects = Object.entries(projectFiles)
 
 document.querySelector('#app').innerHTML = `
   <div class="page-shell">
-    <header class="site-header reveal" style="--delay: 20ms">
-      <a class="wordmark" href="./" aria-label="kintsuba works トップ">
-        <span class="wordmark-mark" aria-hidden="true">k</span>
-        <span>kintsuba / works</span>
-      </a>
+    <header class="site-header">
+      <a class="site-title" href="./">Portfolio</a>
       <a class="github-link" href="https://github.com/kintsuba" target="_blank" rel="noreferrer">
         GitHub <span aria-hidden="true">↗</span>
       </a>
     </header>
 
     <main>
-      <section class="hero" aria-labelledby="page-title">
-        <p class="eyebrow reveal" style="--delay: 60ms">Personal software collection</p>
-        <h1 id="page-title" class="reveal" style="--delay: 90ms">
-          つくったものを、<br />
-          <span>使える場所へ。</span>
-        </h1>
-        <div class="hero-foot reveal" style="--delay: 120ms">
-          <p>公開中の個人制作をまとめています。</p>
-          <p class="project-count"><strong>${projects.length}</strong> projects, and counting.</p>
-        </div>
-      </section>
-
       <section class="projects" aria-labelledby="projects-title">
-        <div class="section-heading reveal" style="--delay: 140ms">
-          <h2 id="projects-title">Projects</h2>
-          <span>Open on the web</span>
-        </div>
-        <div class="project-list">
-          ${projects.map(projectCard).join('')}
-        </div>
+        <h1 id="projects-title">Projects</h1>
+        <ul class="project-list">
+          ${projects.map(projectItem).join('')}
+        </ul>
       </section>
     </main>
-
-    <footer class="site-footer reveal" style="--delay: 320ms">
-      <span>© ${new Date().getFullYear()} kintsuba</span>
-      <span>Built for the open web.</span>
-    </footer>
   </div>
 `;

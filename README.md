@@ -19,8 +19,6 @@ title: 作品名
 url: https://example.com/
 order: 3
 ---
-
-作品の短い説明。
 ```
 
 `main` ブランチへpushすると、GitHub Actionsが自動でビルドしてGitHub Pagesへ公開します。初回のみ、GitHubリポジトリの **Settings → Pages → Source** で **GitHub Actions** を選択してください。
